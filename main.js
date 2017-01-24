@@ -248,8 +248,8 @@ lineReader.on('close', function () {
     });
     obj.Oilseed=maxCname;
     obj.value=max;
-    arr.push(obj);
     oilseedsMap.set(maxCname, 0);
+    arr.push(obj);
 
   }
   writerStream0.write(JSON.stringify(arr));

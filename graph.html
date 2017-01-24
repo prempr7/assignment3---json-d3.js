@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+	<style>
+
+  .bar{
+    fill: green;
+  }
+
+	.bar0{
+		fill:green;
+	}
+
+	.bar1{
+		fill:steelblue;
+	}
+
+	.bar2{
+		fill:grey;
+	}
+
+	.bar3{
+		fill:orange;
+	}
+
+  .bar:hover{
+    fill: red;
+  }
+
+	.axis {
+	  font: 10px sans-serif;
+	}
+
+	.axis path,
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	}
+
+	</style>
+</head>
+
+<body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+// set the dimensions of the canvas
+var margin = {top: 50, right: 40, bottom: 290, left: 470},
+    width = 1200 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
+
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+
+// add the SVG element
+var chart1 = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  	.append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+// load the data
+d3.json("myJsProduction1.json", function(error, data) {
+
+    data.forEach(function(d) {
+        d.Oilseed = d.Oilseed;
+        d.value = +d.value;
+    });
+
+  // scale the range of the data
+  x.domain(data.map(function(d) { return d.Oilseed; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  // add axis
+  chart1.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    	.selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  chart1.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    	.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Production (mn-ton)");
+
+	chart1.append("text")
+			.attr("x", (width / 2))
+			.attr("y", 0 - (margin.top / 2))
+			.attr("text-anchor", "middle")
+			.style("font-size", "26px")
+			.style("text-decoration", "underline")
+			.text("Oilseed Crop Type vs Production for 2013");
+
+  // Add bar chart
+  chart1.selectAll("bar")
+      .data(data)
+    	.enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Oilseed); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); });
+
+});
+
+			// add the SVG element
+			var chart2 = d3.select("body").append("svg")
+			    .attr("width", width + margin.left + margin.right)
+			    .attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+			    .attr("transform",
+			          "translate(" + margin.left + "," + margin.top + ")");
+
+
+			// load the data
+			d3.json("myJsProduction2.json", function(error, data) {
+
+			    data.forEach(function(d) {
+			        d.Foodgrain = d.Foodgrain;
+			        d.value = +d.value;
+			    });
+
+			  // scale the range of the data
+			  x.domain(data.map(function(d) { return d.Foodgrain; }));
+			  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+			  // add axis
+			  chart2.append("g")
+			      .attr("class", "x axis")
+			      .attr("transform", "translate(0," + height + ")")
+			      .call(xAxis)
+			    .selectAll("text")
+			      .style("text-anchor", "end")
+			      .attr("dx", "-.8em")
+			      .attr("dy", "-.55em")
+			      .attr("transform", "rotate(-90)" );
+
+			  chart2.append("g")
+			      .attr("class", "y axis")
+			      .call(yAxis)
+			    .append("text")
+			      .attr("transform", "rotate(-90)")
+			      .attr("y", 5)
+			      .attr("dy", ".71em")
+			      .style("text-anchor", "end")
+			      .text("Production (mn-ton)");
+
+						chart2.append("text")
+								.attr("x", (width / 2))
+								.attr("y", 0 - (margin.top / 2))
+								.attr("text-anchor", "middle")
+								.style("font-size", "26px")
+								.style("text-decoration", "underline")
+								.text("Foodgrains Type vs Production for 2013");
+
+
+			  // Add bar chart
+			  chart2.selectAll("bar")
+			      .data(data)
+			    	.enter().append("rect")
+			      .attr("class", "bar")
+			      .attr("x", function(d) { return x(d.Foodgrain); })
+			      .attr("width", x.rangeBand())
+			      .attr("y", function(d) { return y(d.value); })
+			      .attr("height", function(d) { return height - y(d.value); });
+
+});
+
+// add the SVG element
+var chart3 = d3.select("body").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+// load the data
+d3.json("myJsProduction3.json", function(error, data) {
+
+		data.forEach(function(d) {
+				d.year = d.year;
+				d.value = +d.value;
+		});
+
+	// scale the range of the data
+	x.domain(data.map(function(d) { return d.year; }));
+	y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+	// add axis
+	chart3.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + height + ")")
+			.call(xAxis)
+			.selectAll("text")
+			.style("text-anchor", "end")
+			.attr("dx", "-.8em")
+			.attr("dy", "-.55em")
+			.attr("transform", "rotate(-90)" );
+
+	chart3.append("g")
+			.attr("class", "y axis")
+			.call(yAxis)
+			.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 5)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text("Aggregate Production (mn-ton)");
+
+			chart3.append("text")
+					.attr("x", (width / 2))
+					.attr("y", 0 - (margin.top / 2))
+					.attr("text-anchor", "middle")
+					.style("font-size", "26px")
+					.style("text-decoration", "underline")
+					.text("Aggregated Value of Commercial Crops vs Year");
+
+	// Add bar chart
+	chart3.selectAll("bar")
+			.data(data)
+			.enter().append("rect")
+			.attr("class", "bar")
+			.attr("x", function(d) { return x(d.year); })
+			.attr("width", x.rangeBand())
+			.attr("y", function(d) { return y(d.value); })
+			.attr("height", function(d) { return height - y(d.value); });
+
+});
+
+
+// add the SVG element
+var chart4 = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  	.append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+// load the data
+d3.json("myJsProduction4.json", function(error, data) {
+
+    data.forEach(function(d) {
+        d.Year = d.Year;
+				d.Andhra_Pradesh = +d.Andhra_Pradesh;
+				d.Karnataka = +d.Karnataka;
+				d.Kerala = +d.Kerala;
+				d.Tamil_Nadu = +d.Tamil_Nadu;
+    });
+
+  // scale the range of the data
+  x.domain(data.map(function(d) { return d.Year; }));
+  y.domain([0, d3.max(data, function(d) { return d.Andhra_Pradesh+d.Karnataka+d.Kerala+d.Tamil_Nadu; })]);
+
+  // add axis
+  chart4.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    	.selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  chart4.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    	.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -50)
+      .attr("dy", ".71em")
+      .style({"text-anchor": "end","font-size":"16px"})
+      .text("Production");
+
+			chart4.append("text")
+					.attr("x", (width / 2))
+					.attr("y", 0 - (margin.top / 2))
+					.attr("text-anchor", "middle")
+					.style("font-size", "26px")
+					.style("text-decoration", "underline")
+					.text("Stacked Chart for Rice Production");
+
+  // Add bar chart
+	chart4.selectAll("bar0")
+			.data(data)
+			.enter().append("rect")
+			.attr("class", "bar0")
+			.attr("x", function(d) { return x(d.Year); })
+			.attr("width", x.rangeBand())
+			.attr("y", function(d) { return y(d.Andhra_Pradesh+d.Karnataka+d.Kerala+d.Tamil_Nadu); })
+			.attr("height", function(d) { return height - y(d.Andhra_Pradesh+d.Karnataka+d.Kerala+d.Tamil_Nadu); });
+
+
+  chart4.selectAll("bar1")
+      .data(data)
+    	.enter().append("rect")
+      .attr("class", "bar1")
+      .attr("x", function(d) { return x(d.Year); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.Andhra_Pradesh); })
+      .attr("height", function(d) { return height - y(d.Andhra_Pradesh); });
+
+			chart4.selectAll("bar2")
+					.data(data)
+					.enter().append("rect")
+					.attr("class", "bar2")
+					.attr("x", function(d) { return x(d.Year); })
+					.attr("width", x.rangeBand())
+					.attr("y", function(d) { return y(d.Karnataka); })
+					.attr("height", function(d) { return height - y(d.Karnataka); });
+
+					chart4.selectAll("bar3")
+							.data(data)
+							.enter().append("rect")
+							.attr("class", "bar3")
+							.attr("x", function(d) { return x(d.Year); })
+							.attr("width", x.rangeBand())
+							.attr("y", function(d) { return y(d.Kerala); })
+							.attr("height", function(d) { return height - y(d.Kerala); });
+
+});
+
+</script>
+
+</body>
